@@ -3,7 +3,7 @@ var Scs = require('../packages/chain3-scs');
 
 var scs = new Scs();
 
-var method = 'getTransaction';
+var method = 'getTransactionByHash';
 
 var txResult = {
     "hash":"0xc6ef2fc5426d6ad6fd9e2a26abeab0aa2411b7ab17f30a99d3cb96aed1d1055b",
@@ -34,10 +34,10 @@ var formattedTxResult = {
 
 var tests = [{
     args: ['0x97d4667eD5F70c4586b5B436C9BBD15eaFdbfc02','0xc6ef2fc5426d6ad6fd9e2a26abeab0aa2411b7ab17f30a99d3cb96aed1d1055b'],
-    formattedArgs: ['0x97d4667eD5F70c4586b5B436C9BBD15eaFdbfc02', '0xc6ef2fc5426d6ad6fd9e2a26abeab0aa2411b7ab17f30a99d3cb96aed1d1055b'],
+    formattedArgs: ['0x97d4667ed5f70c4586b5b436c9bbd15eafdbfc02', '0xc6ef2fc5426d6ad6fd9e2a26abeab0aa2411b7ab17f30a99d3cb96aed1d1055b'],
     result: txResult,
     formattedResult: formattedTxResult,
-    call: 'scs_'+ method + 'ByHash'
+    call: 'scs_'+ method
 }];
 
 testMethod.runTests('scs', method, tests);

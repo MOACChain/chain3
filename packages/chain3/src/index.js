@@ -51,11 +51,8 @@ var Chain3 = function Chain3() {
     var setProvider = this.setProvider;
     this.setProvider = function (provider, net) {
         setProvider.apply(_this, arguments);
-		//console.log("chain3 will set provider");
 
         this.mc.setProvider(provider, net);
-        // this.shh.setProvider(provider, net);
-        // this.bzz.setProvider(provider);
 
         return true;
     };

@@ -461,7 +461,7 @@ Method.prototype.buildCall = function() {
 
     // actual send function
     var send = function () {
-        console.log("chain3-core-method-buildCall-send 464:", isSendTx);
+        // console.log("chain3-core-method-buildCall-send 464:", isSendTx);
         var defer = promiEvent(!isSendTx),
             payload = method.toPayload(Array.prototype.slice.call(arguments));
 
@@ -494,7 +494,7 @@ Method.prototype.buildCall = function() {
             if (!isSendTx) {
 
                 if (!err) {
-                    console.log("chain3-core-method-buildCall-sendTxCallback 496:", result);
+                    // console.log("chain3-core-method-buildCall-sendTxCallback 496:", result);
                     defer.resolve(result);
 
                 }
