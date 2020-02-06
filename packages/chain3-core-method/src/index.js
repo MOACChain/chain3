@@ -188,7 +188,7 @@ Method.prototype.toPayload = function (args) {
     return payload;
 };
 
-
+// For the VNODE side, just like Ethereum clients
 Method.prototype._confirmTransaction = function (defer, result, payload) {
     var method = this,
         promiseResolved = false,
@@ -204,7 +204,7 @@ Method.prototype._confirmTransaction = function (defer, result, payload) {
             !payload.params[0].to;
 
     // add custom send Methods
-    var _ethereumCalls = [
+    var _vnodeCalls = [
         new Method({
             name: 'getTransactionReceipt',
             call: 'mc_getTransactionReceipt',
@@ -230,10 +230,10 @@ Method.prototype._confirmTransaction = function (defer, result, payload) {
             }
         })
     ];
-    // attach methods to this._ethereumCall
-    var _ethereumCall = {};
-    _.each(_ethereumCalls, function (mthd) {
-        mthd.attachToObject(_ethereumCall);
+    // attach methods to this._vnodeCall
+    var _vnodeCall = {};
+    _.each(_vnodeCalls, function (mthd) {
+        mthd.attachToObject(_vnodeCall);
         mthd.requestManager = method.requestManager; // assign rather than call setRequestManager()
     });
 
@@ -250,7 +250,7 @@ Method.prototype._confirmTransaction = function (defer, result, payload) {
                 };
             }
             // if we have a valid receipt we don't need to send a request
-            return (existingReceipt ? promiEvent.resolve(existingReceipt) : _ethereumCall.getTransactionReceipt(result))
+            return (existingReceipt ? promiEvent.resolve(existingReceipt) : _vnodeCall.getTransactionReceipt(result))
             // catch error from requesting receipt
             .catch(function (err) {
                 sub.unsubscribe();
@@ -305,7 +305,7 @@ Method.prototype._confirmTransaction = function (defer, result, payload) {
                         return;
                     }
 
-                    _ethereumCall.getCode(receipt.contractAddress, function (e, code) {
+                    _vnodeCall.getCode(receipt.contractAddress, function (e, code) {
 
                         if (!code) {
                             return;
@@ -408,7 +408,7 @@ Method.prototype._confirmTransaction = function (defer, result, payload) {
     var startWatching = function(existingReceipt) {
         // if provider allows PUB/SUB
         if (_.isFunction(this.requestManager.provider.on)) {
-            _ethereumCall.subscribe('newBlockHeaders', checkConfirmation.bind(null, existingReceipt, false));
+            _vnodeCall.subscribe('newBlockHeaders', checkConfirmation.bind(null, existingReceipt, false));
         } else {
             intervalId = setInterval(checkConfirmation.bind(null, existingReceipt, true), 1000);
         }
@@ -416,7 +416,7 @@ Method.prototype._confirmTransaction = function (defer, result, payload) {
 
 
     // first check if we already have a confirmed transaction
-    _ethereumCall.getTransactionReceipt(result)
+    _vnodeCall.getTransactionReceipt(result)
     .then(function(receipt) {
         if (receipt && receipt.blockHash) {
             if (defer.eventEmitter.listeners('confirmation').length > 0) {
@@ -461,6 +461,7 @@ Method.prototype.buildCall = function() {
 
     // actual send function
     var send = function () {
+        console.log("chain3-core-method-buildCall-send 464:", isSendTx);
         var defer = promiEvent(!isSendTx),
             payload = method.toPayload(Array.prototype.slice.call(arguments));
 
@@ -493,6 +494,7 @@ Method.prototype.buildCall = function() {
             if (!isSendTx) {
 
                 if (!err) {
+                    console.log("chain3-core-method-buildCall-sendTxCallback 496:", result);
                     defer.resolve(result);
 
                 }

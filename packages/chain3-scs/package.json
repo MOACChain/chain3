@@ -1,0 +1,25 @@
+{
+    "name": "chain3-scs",
+    "version": "1.0.0",
+    "description": "chain3 module to interact with the MOAC SCS server and AppChains.",
+    "repository": "https://github.com/MOACChain/chain3/tree/1.x/packages/chain3-scs",
+    "license": "LGPL-3.0",
+    "engines": {
+        "node": ">=8.0.0"
+    },
+    "main": "src/index.js",
+    "dependencies": {
+        "underscore": "1.9.1",
+        "web3-core": "1.2.1",
+        "web3-core-helpers": "1.2.1",
+        "chain3-core-method": "*",
+        "web3-core-subscriptions": "1.2.1",
+        "web3-eth-abi": "1.2.1",
+        "chain3-mc-contract": "*",
+        "chain3-mc": "*",
+        "web3-eth-iban": "1.2.1",
+        "web3-eth-personal": "1.2.1",
+        "web3-net": "1.2.1",
+        "web3-utils": "1.2.1"
+    }
+}

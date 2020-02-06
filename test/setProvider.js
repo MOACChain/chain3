@@ -1,51 +1,35 @@
 var FakeIpcProvider = require('./helpers/FakeIpcProvider');
 var FakeHttpProvider = require('./helpers/FakeHttpProvider');
 
-// // set the etheeumProvider
-// var provider1 = new FakeHttpProvider();
-// var provider2 = new FakeIpcProvider();
-// provider1.bzz = 'http://givenProvider:8500';
-// provider2.bzz = 'http://swarm-gateways.net';
-//
-// if (typeof window !== 'undefined') {
-//     global.ethereumProvider = provider1;
-// }
-// if (typeof window !== 'undefined') {
-//     window.ethereumProvider = provider1;
-// }
-
 
 var chai = require('chai');
 var assert = chai.assert;
 var Chain3 = require('../packages/chain3');
 var Mc = require('../packages/chain3-mc');
-//var Shh = require('../packages/web3-shh');
 var Personal = require('web3-eth-personal');
 var Accounts = require('../packages/chain3-mc-accounts');
 var Contract = require('../packages/chain3-mc-contract');
 var Net = require('web3-net');
-//var Bzz = require('../packages/web3-bzz');
+var Scs = require('../packages/chain3-scs');
 
 
 var tests = [{
     Lib: Chain3
 },{
     Lib: Mc
-}/*,{
-    Lib: Shh
-}*/,{
+},{
+    Lib: Scs
+},{
     Lib: Personal
 },{
     Lib: Net
 },{
     Lib: Accounts
-}/*,{
-    Lib: Bzz,
-    swarm: true
-}*/];
+}];
 
 
-
+// mc should have only one provider
+// scs 
 describe('lib/chain3/setProvider', function () {
     it('Chain3 submodules should set the provider using constructor', function () {
 
@@ -126,25 +110,6 @@ describe('lib/chain3/setProvider', function () {
 
     });
 
-    it('Bzz should set automatically to ethereumProvider', function () {
-
-        var provider1 = new FakeHttpProvider();
-        provider1.bzz = 'http://localhost:8500';
-        var provider2 = new FakeIpcProvider();
-        provider2.bzz = 'http://focalhost:8500';
-
-        // was set in test/1_givenProvider-ethereumProvider.js
-        //var lib = new Bzz(provider1);
-
-        //assert.equal(lib.currentProvider, provider1.bzz);
-
-
-        //lib.setProvider(provider2);
-
-        //assert.equal(lib.currentProvider, provider2.bzz);
-
-
-    });
 
     tests.forEach(function (test) {
         it(test.Lib.name +' should set the provider using constructor', function () {
@@ -195,6 +160,7 @@ describe('lib/chain3/setProvider', function () {
             }
 
         });
+        
         it(test.Lib.name +' should set the provider using constructor, and change later using setProvider', function () {
 
             var provider1 = new FakeHttpProvider();

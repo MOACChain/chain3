@@ -29,13 +29,14 @@ var Personal = require('web3-eth-personal');
 // var Shh = require('web3-shh');
 // var Bzz = require('web3-bzz');
 var utils = require('web3-utils');
-var Mc = require('../../chain3-mc')
+var Mc = require('../../chain3-mc');
+var Scs = require('../../chain3-scs');
 
 var Chain3 = function Chain3() {
     var _this = this;
 
-    // sets _requestmanager etc
-    //console.log("chain3 will package init");
+    // sets _requestmanager etc, notice this only 
+    // set one provider
     core.packageInit(this, arguments);
 
     this.version = version;
@@ -44,8 +45,7 @@ var Chain3 = function Chain3() {
 	//console.log("chain3 will new mc");
 
     this.mc = new Mc(this);
-    // this.shh = new Shh(this);
-    // this.bzz = new Bzz(this);
+    this.scs = new Scs(this);
 
     // overwrite package setProvider
     var setProvider = this.setProvider;
@@ -59,12 +59,25 @@ var Chain3 = function Chain3() {
 
         return true;
     };
+
+    // For SCS clients, add another Provider to communidate with
+    // This may cause confusion ??? can move out of the way
+    var setScsProvider = this.setProvider;
+    this.setScsProvider = function (provider, net) {
+        // console.log("chain3 will set SCS provider:", this.scs, " with arg", arguments);
+        setScsProvider.apply(_this, arguments);
+        
+        this.scs.setProvider(provider, net);
+
+        return true;
+    };
 };
 
 Chain3.version = version;
 Chain3.utils = utils;
 Chain3.modules = {
     Mc: Mc,
+    Scs: Scs,
     Net: Net,
     Personal: Personal
 };

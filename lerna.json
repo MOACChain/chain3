@@ -1,0 +1,15 @@
+{
+  "version": "1.0.1",
+  "command": {
+    "init": {
+      "exact": true
+    },
+    "publish": {
+      "exact": true,
+      "skipGit": true
+    }
+  },
+  "packages": [
+    "packages/*"
+  ]
+}

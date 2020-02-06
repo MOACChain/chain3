@@ -2,7 +2,7 @@ var chai = require('chai');
 var assert = chai.assert;
 var Method = require('../packages/chain3-core-method');
 
-describe('lib/web3/method', function () {
+describe('lib/chain3/method', function () {
     describe('extractCallback', function () {
         it('should extract callback', function () {
 

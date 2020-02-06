@@ -1,18 +1,18 @@
 /*
  This file is part of chain3.js.
 
- web3.js is free software: you can redistribute it and/or modify
+ chain3.js is free software: you can redistribute it and/or modify
  it under the terms of the GNU Lesser General Public License as published by
  the Free Software Foundation, either version 3 of the License, or
  (at your option) any later version.
 
- web3.js is distributed in the hope that it will be useful,
+ chain3.js is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  GNU Lesser General Public License for more details.
 
  You should have received a copy of the GNU Lesser General Public License
- along with web3.js.  If not, see <http://www.gnu.org/licenses/>.
+ along with chain3.js.  If not, see <http://www.gnu.org/licenses/>.
  */
 /**
  * @file index.js
@@ -33,7 +33,7 @@ var utils = require('web3-utils');
 var Net = require('web3-net');
 
 
-var ENS = require('../../chain3-mc-ens');
+// var ENS = require('../../chain3-mc-ens');
 var Personal = require('web3-eth-personal');
 var BaseContract = require('../../chain3-mc-contract');
 var Iban = require('web3-eth-iban');
@@ -184,8 +184,8 @@ var Mc = function Moac() {
     // add ABI
     this.abi = abi;
 
-    // add ENS
-    this.ens = new ENS(this);
+    // add ENS, skipped for now
+    // this.ens = new ENS(this);
 
     var methods = [
         // Not supported by MOAC

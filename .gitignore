@@ -1,3 +1,5 @@
+WORKLOG.md
+debug/
 node_modules/
 package-lock.json
 dist/
@@ -7,4 +9,4 @@ scs/
 .vscode/*
  lib/.DS_Store
 .DS_Store
-coverage
+packages/chain3/dist
