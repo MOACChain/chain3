@@ -14,6 +14,7 @@ LICENSE file for more details.
 
 ## Updates
 
+* v1.0.1-alpha is available for testing. It has all VNODE methods and support some SCS methods. Please check the branch 1.x or the release page for download.
 * v0.1.22 Fixed a test in contracTest due to bignumber.js lib, update some dependence pull requests.
 * v0.1.21 Fixed the previous bug with lodash.
 * v0.1.20 Added admin and txpool RPC methods for VNODE, fixed signature error of zero to support microchain DAPP call functions.
