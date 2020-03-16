@@ -71,11 +71,12 @@ var transactionFromBlockCall = function (args) {
     return (_.isString(args[1]) && args[1].indexOf('0x') === 0) ? 'scs_getTransactionByBlockHashAndIndex' : 'scs_getTransactionByBlockNumberAndIndex';
 };
 
-var getTransaction = function (args) {
+var getTransactionCall = function (args) {
+    // console.log("args[1]", args[1], args.length);
     return (_.isString(args[1]) && args[1].indexOf('0x') === 0) ? 'scs_getTransactionByHash' : 'scs_getTransactionByNonce';
 };
 
-var getReceipt = function (args) {
+var getReceiptCall = function (args) {
     return (_.isString(args[1]) && args[1].indexOf('0x') === 0) ? 'scs_getReceiptByHash' : 'scs_getReceiptByNonce';
 };
 
@@ -164,44 +165,10 @@ var Scs = function SCSServer() {
     // create a proxy Contract type for this instance, as a Contract's provider
     // is stored as a class member rather than an instance variable. If we do
     // not create this proxy type, changing the provider in one instance of
-    // chain3-mc would subsequently change the provider for _all_ contract
+    // chain3-scs would subsequently change the provider for _all_ contract
     // instances!
     var self = this;
-    /*
-    var Contract = function Contract() {
-        BaseContract.apply(this, arguments);
-
-        // when Eth.setProvider is called, call packageInit
-        // on all contract instances instantiated via this Eth
-        // instances. This will update the currentProvider for
-        // the contract instances
-        var _this = this;
-        var setProvider = self.setProvider;
-        self.setProvider = function() {
-          setProvider.apply(self, arguments);
-          core.packageInit(_this, [self.currentProvider]);
-        };
-    };
-
-    Contract.setProvider = function() {
-        BaseContract.setProvider.apply(this, arguments);
-    };
-
-    // make our proxy Contract inherit from chain3-mc-contract so that it has all
-    // the right functionality and so that instanceof and friends work properly
-    Contract.prototype = Object.create(BaseContract.prototype);
-    Contract.prototype.constructor = Contract;
-
-    // add contract
-    this.Contract = Contract;
-    this.Contract.defaultAccount = this.defaultAccount;
-    this.Contract.defaultBlock = this.defaultBlock;
-    this.Contract.setProvider(this.currentProvider, this.accounts);
-*/
-
-    // add ABI for SCS type
-    // this.abi = abi;
-
+    // The following methods have been 
     // scs_directCall
     // scs_getBalance
     // scs_getBlock
@@ -221,24 +188,23 @@ var Scs = function SCSServer() {
     // scs_getTxpool
 
     var methods = [
-
         new Method({
             name: 'directCall',
             call: 'scs_directCall',
-            params: 1,
-            inputFormatter: formatter.inputAddressFormatter
+            params: 2,
+            inputFormatter: [formatter.inputAddressFormatter, null]
          }),
         new Method({
             name: 'getAppChainInfo',
             call: 'scs_getAppChainInfo',
             params: 1,
-            inputFormatter: formatter.inputAddressFormatter
+            inputFormatter: [formatter.inputAddressFormatter]
          }),
         new Method({
             name: 'getDappState',
             call: 'scs_getDappState',
             params: 1,
-            inputFormatter: formatter.inputAddressFormatter
+            inputFormatter: [formatter.inputAddressFormatter]
          }),
          new Method({
             name: 'getPastLogs',
@@ -268,6 +234,12 @@ var Scs = function SCSServer() {
             params: 0,
             outputFormatter: utils.toChecksumAddress
         }),
+        new Method({//to be compatible with old RPC method, will be removed in later version
+            name: 'getMicroChainList',
+            call: 'scs_getMicroChainList',
+            params: 0,
+            outputFormatter: utils.toChecksumAddress
+        }),
         new Method({
             name: 'isSyncing',
             call: 'scs_syncing',
@@ -278,7 +250,7 @@ var Scs = function SCSServer() {
             name: 'getDappList',
             call: 'scs_getDappList',
             params: 1,
-            inputFormatter: formatter.inputAddressFormatter,
+            inputFormatter: [formatter.inputAddressFormatter],
             outputFormatter: utils.toChecksumAddress
         }),
         new Method({
@@ -289,9 +261,9 @@ var Scs = function SCSServer() {
         }),
         new Method({
             name: 'getBlockNumber',
-            call: 'scs_blockNumber',
+            call: 'scs_getBlockNumber',
             params: 1,
-            inputFormatter: formatter.inputAddressFormatter,
+            inputFormatter: [formatter.inputAddressFormatter],
             outputFormatter: utils.hexToNumber
         }),
         new Method({
@@ -308,93 +280,60 @@ var Scs = function SCSServer() {
             inputFormatter: [formatter.inputAddressFormatter, formatter.inputAddressFormatter, formatter.inputDefaultBlockNumberFormatter],
             outputFormatter: formatter.outputBigNumberFormatter
         }),
-        // new Method({
-        //     name: 'getStorageAt',
-        //     call: 'scs_getStorageAt',
-        //     params: 3,
-        //     inputFormatter: [formatter.inputAddressFormatter, utils.numberToHex, formatter.inputDefaultBlockNumberFormatter]
-        // }),
-        // new Method({
-        //     name: 'getCode',
-        //     call: 'scs_getCode',
-        //     params: 2,
-        //     inputFormatter: [formatter.inputAddressFormatter, formatter.inputDefaultBlockNumberFormatter]
-        // }),
         new Method({
             name: 'getBlock',
             call: blockCall,
             params: 3,
             inputFormatter: [formatter.inputAddressFormatter, formatter.inputBlockNumberFormatter, function (val) { return !!val; }],
-            outputFormatter: formatter.outputBlockFormatter
+            // outputFormatter: formatter.outputBlockFormatter
         }),
         new Method({
             name: 'getBlockByNumber',
             call: 'scs_getBlockByNumber',
             params: 2,
-            inputFormatter: [formatter.inputAddressFormatter, formatter.inputBlockNumberFormatter],
-            outputFormatter: formatter.outputBlockFormatter
-        }),
-        // new Method({
-        //     name: 'getBlockTransactionCount',
-        //     call: getBlockTransactionCountCall,
-        //     params: 1,
-        //     inputFormatter: [formatter.inputBlockNumberFormatter],
-        //     outputFormatter: utils.hexToNumber
-        // }),
-        // new Method({
-        //     name: 'getBlockUncleCount',
-        //     call: uncleCountCall,
-        //     params: 1,
-        //     inputFormatter: [formatter.inputBlockNumberFormatter],
-        //     outputFormatter: utils.hexToNumber
-        // }),
-        new Method({
-            name: 'getTransactionByHash',
-            call: 'scs_getTransactionByHash',
-            params: 2,
-            inputFormatter: [formatter.inputAddressFormatter, null],
-            outputFormatter: formatter.outputTransactionFormatter
+            inputFormatter: [formatter.inputAddressFormatter, formatter.inputBlockNumberFormatter]
+            // outputFormatter: formatter.outputBlockFormatter
         }),
         new Method({
             name: 'getTransactionByNonce',
             call: 'scs_getTransactionByNonce',
+            params: 3,
+            inputFormatter: [formatter.inputAddressFormatter, formatter.inputAddressFormatter, null],
+            // outputFormatter: formatter.outputTransactionFormatter
+        }),
+        new Method({
+            name: 'getTransactionByHash',
+            call: 'scs_getTransactionByHash',
             params: 2,
-            inputFormatter: [formatter.inputAddressFormatter, null],
+            inputFormatter: [formatter.inputAddressFormatter, null]
+            // outputFormatter: formatter.outputTransactionFormatter
+        }),
+        new Method({
+            name: 'getTransactionFromBlock',
+            call: transactionFromBlockCall,
+            params: 3,
+            inputFormatter: [formatter.inputAddressFormatter, formatter.inputBlockNumberFormatter, utils.numberToHex],
             outputFormatter: formatter.outputTransactionFormatter
         }),
-        // new Method({
-        //     name: 'getTransaction',
-        //     call: 'eth_getTransactionByHash',
-        //     params: 1,
-        //     inputFormatter: [null],
-        //     outputFormatter: formatter.outputTransactionFormatter
-        // }),
-        // new Method({
-        //     name: 'getTransactionFromBlock',
-        //     call: transactionFromBlockCall,
-        //     params: 3,
-        //     inputFormatter: [formatter.inputAddressFormatter, formatter.inputBlockNumberFormatter, utils.numberToHex],
-        //     outputFormatter: formatter.outputTransactionFormatter
-        // }),
         new Method({
             name: 'getReceiptByHash',
             call: 'scs_getReceiptByHash',
             params: 2,
             inputFormatter: [formatter.inputAddressFormatter, null],
-            outputFormatter: formatter.outputTransactionReceiptFormatter
+            // outputFormatter: formatter.outputTransactionReceiptFormatter
         }),
         new Method({
             name: 'getReceiptByNonce',
             call: 'scs_getReceiptByNonce',
-            params: 2,
-            inputFormatter: [formatter.inputAddressFormatter, null],
-            outputFormatter: formatter.outputTransactionReceiptFormatter
+            params: 3,
+            inputFormatter: [formatter.inputAddressFormatter, formatter.inputAddressFormatter,utils.numberToHex],
+            // outputFormatter: formatter.outputTransactionReceiptFormatter
         }),
         new Method({
             name: 'getTxpool',
             call: 'scs_getTxpool',
             params: 1,
-            inputFormatter: formatter.inputAddressFormatter
+            inputFormatter: [formatter.inputAddressFormatter]
         }),
         // AppChain address + account address
         new Method({
@@ -407,7 +346,7 @@ var Scs = function SCSServer() {
             name: 'getExchangeInfo',
             call: 'scs_getExchangeInfo',
             params: 1,
-            inputFormatter: formatter.inputAddressFormatter
+            inputFormatter: [formatter.inputAddressFormatter]
         }),
         new Method({
             name: 'getTransactionCount',
@@ -415,141 +354,8 @@ var Scs = function SCSServer() {
             params: 3,
             inputFormatter: [formatter.inputAddressFormatter, formatter.inputAddressFormatter, formatter.inputDefaultBlockNumberFormatter],
             outputFormatter: utils.hexToNumber
-        }),
-        // new Method({
-        //     name: 'sendSignedTransaction',
-        //     call: 'scs_sendRawTransaction',
-        //     params: 2,
-        //     inputFormatter: [null]
-        // }),
-        new Method({
-            name: 'signTransaction',
-            call: 'scs_signTransaction',
-            params: 1,
-            inputFormatter: [formatter.inputTransactionFormatter]
-        }),
-        // new Method({
-        //     name: 'sendTransaction',
-        //     call: 'mc_sendTransaction',
-        //     params: 1,
-        //     inputFormatter: [formatter.inputTransactionFormatter]
-        // }),
-        new Method({
-            name: 'sign',
-            call: 'scs_sign',
-            params: 2,
-            inputFormatter: [formatter.inputSignFormatter, formatter.inputAddressFormatter],
-            transformPayload: function (payload) {
-                payload.params.reverse();
-                return payload;
-            }
-        }),
-        // new Method({
-        //     name: 'call',
-        //     call: 'mc_call',
-        //     params: 2,
-        //     inputFormatter: [formatter.inputCallFormatter, formatter.inputDefaultBlockNumberFormatter]
-        // }),
-        // new Method({
-        //     name: 'estimateGas',
-        //     call: 'mc_estimateGas',
-        //     params: 1,
-        //     inputFormatter: [formatter.inputCallFormatter],
-        //     outputFormatter: utils.hexToNumber
-        // }),
-        // new Method({
-        //     name: 'submitWork',
-        //     call: 'mc_submitWork',
-        //     params: 3
-        // }),
-        new Method({
-            name: 'getWork',
-            call: 'scs_getWork',
-            params: 0
-        }),
+        })
 
-
-        // SCS not providing subscription service. 
-        // subscriptions
-/*
-        new Subscriptions({
-            name: 'subscribe',
-            type: 'mc',
-            subscriptions: {
-                'newBlockHeaders': {
-                    // TODO rename on RPC side?
-                    subscriptionName: 'newHeads', // replace subscription with this name
-                    params: 0,
-                    outputFormatter: formatter.outputBlockFormatter
-                },
-                'pendingTransactions': {
-                    subscriptionName: 'newPendingTransactions', // replace subscription with this name
-                    params: 0
-                },
-                'logs': {
-                    params: 1,
-                    inputFormatter: [formatter.inputLogFormatter],
-                    outputFormatter: formatter.outputLogFormatter,
-                    // DUBLICATE, also in chain3-mc-contract
-                    subscriptionHandler: function (output) {
-                        if(output.removed) {
-                            this.emit('changed', output);
-                        } else {
-                            this.emit('data', output);
-                        }
-
-                        if (_.isFunction(this.callback)) {
-                            this.callback(null, output, this);
-                        }
-                    }
-                },
-                'syncing': {
-                    params: 0,
-                    outputFormatter: formatter.outputSyncingFormatter,
-                    subscriptionHandler: function (output) {
-                        var _this = this;
-
-                        // fire TRUE at start
-                        if(this._isSyncing !== true) {
-                            this._isSyncing = true;
-                            this.emit('changed', _this._isSyncing);
-
-                            if (_.isFunction(this.callback)) {
-                                this.callback(null, _this._isSyncing, this);
-                            }
-
-                            setTimeout(function () {
-                                _this.emit('data', output);
-
-                                if (_.isFunction(_this.callback)) {
-                                    _this.callback(null, output, _this);
-                                }
-                            }, 0);
-
-                            // fire sync status
-                        } else {
-                            this.emit('data', output);
-                            if (_.isFunction(_this.callback)) {
-                                this.callback(null, output, this);
-                            }
-
-                            // wait for some time before fireing the FALSE
-                            clearTimeout(this._isSyncingTimeout);
-                            this._isSyncingTimeout = setTimeout(function () {
-                                if(output.currentBlock > output.highestBlock - 200) {
-                                    _this._isSyncing = false;
-                                    _this.emit('changed', _this._isSyncing);
-
-                                    if (_.isFunction(_this.callback)) {
-                                        _this.callback(null, _this._isSyncing, _this);
-                                    }
-                                }
-                            }, 500);
-                        }
-                    }
-                }
-            }
-        })*/
     ];
 
     // Attach the deafult properties to the methods
@@ -558,7 +364,7 @@ var Scs = function SCSServer() {
         method.setRequestManager(_this._requestManager, _this.accounts); // second param means is accounts (necessary for wallet signing)
         method.defaultBlock = _this.defaultBlock;
         method.defaultAccount = _this.defaultAccount;
-        method.defaultAppChain = _this.defaultAppChain;
+        method.defaultAppChain = _this.defaultAppChain;// Address of the AppChain, default is the 1st in the list
     });
 
 };

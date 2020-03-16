@@ -1,7 +1,7 @@
 {
   "name": "chain3",
   "namespace": "MOAC",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "MOAC JavaScript API, middleware to talk to MOAC vnode and scs over RPC",
   "main": "./packages/chain3/src/index.js",
   "license": "LGPL-3.0",

@@ -1,6 +1,6 @@
 var testMethod = require('./helpers/test.method.js');
 // Returns the Transaction by Hash at the AppChain on the connecting SCS.
-var method = 'getTransactionByHash';
+var method = 'getTransactionByNonce';
 
 var txResult={
     "contractAddress": '0x0a674edac2ccd47ae2a3197ea3163aa81087fbd1',
@@ -37,14 +37,14 @@ var txFormattedResult={
     "transactionHash":"0x67bfaa5a704e77a31d5e7eb866f8c662fa8313a7882d13d0d23e377cd66d2a69"};
 
 var tests = [{
-    args: ['dbdbdb2cbd23b783741e8d7fcf51e459b497e4a6','0x67bfaa5a704e77a31d5e7eb866f8c662fa8313a7882d13d0d23e377cd66d2a69'],
-    formattedArgs: ['0xdbdbdb2cbd23b783741e8d7fcf51e459b497e4a6','0x67bfaa5a704e77a31d5e7eb866f8c662fa8313a7882d13d0d23e377cd66d2a69'],
+    args: ['dbdbdb2cbd23b783741e8d7fcf51e459b497e4a6','0x2328537bc943ab1a89fe94a4b562ee7a7b013634', 3],
+    formattedArgs: ['0xdbdbdb2cbd23b783741e8d7fcf51e459b497e4a6','0x2328537bc943ab1a89fe94a4b562ee7a7b013634', 3],
     result: txResult,
     formattedResult: txFormattedResult,
     call: 'scs_'+ method
     },{
-    args: ['0xdbdbdb2cbd23b783741e8d7fcf51e459b497e4a6','0x67bfaa5a704e77a31d5e7eb866f8c662fa8313a7882d13d0d23e377cd66d2a69'],
-    formattedArgs: ['0xdbdbdb2cbd23b783741e8d7fcf51e459b497e4a6','0x67bfaa5a704e77a31d5e7eb866f8c662fa8313a7882d13d0d23e377cd66d2a69'],
+    args: ['0xdbdbdb2cbd23b783741e8d7fcf51e459b497e4a6','0x2328537bc943ab1a89fe94a4b562ee7a7b013634', 3],
+    formattedArgs: ['0xdbdbdb2cbd23b783741e8d7fcf51e459b497e4a6','0x2328537bc943ab1a89fe94a4b562ee7a7b013634', 3],
     result: txResult,
     formattedResult: txFormattedResult,
         call: 'scs_'+ method

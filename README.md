@@ -1,4 +1,4 @@
-# MOAC JavaScript API version 1.0.1.
+# MOAC JavaScript API version 1.0.2.
 This documentation is under construction and documents the 1.x alpha versions of chain3.js. 
 The current stable version of chain3.js is 0.1.22 and should get preferred for production use cases.
 
