@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<script type="text/javascript" src="../node_modules/bignumber.js/bignumber.min.js"></script>
+<script type="text/javascript" src="../dist/chain3-light.js">var global = global || window;</script>
+<script type="text/javascript">
+
+   
+    var Chain3 = require('chain3');
+    var chain = new Chain3();
+    chain.setProvider(new chain.providers.HttpProvider('http://localhost:8545'));
+
+    function watchBalance() {
+        var coinbase = chain.mc.coinbase;
+
+        var originalBalance = chain.mc.getBalance(coinbase).toNumber();
+        document.getElementById('coinbase').innerText = 'coinbase: ' + coinbase;
+        document.getElementById('original').innerText = ' original balance: ' + originalBalance + '    watching...';
+
+        chain.mc.filter('latest').watch(function() {
+            var currentBalance = chain.mc.getBalance(coinbase).toNumber();
+            document.getElementById("current").innerText = 'current: ' + currentBalance;
+            document.getElementById("diff").innerText = 'diff:    ' + (currentBalance - originalBalance);
+        });
+    }
+
+</script>
+</head>
+<body>
+    <h1>coinbase balance</h1>
+    <button type="button" onClick="watchBalance();">watch balance</button>
+    <div></div>
+    <div id="coinbase"></div>
+    <div id="original"></div>
+    <div id="current"></div>
+    <div id="diff"></div>
+</body>
+</html>
