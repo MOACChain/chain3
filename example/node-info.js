@@ -7,11 +7,10 @@
  * 
 */
 
-// var Chain3 = require('../index.js');
-var Chain3 = require('../dist/chain3.js');
+var Chain3 = require('../index.js');
 var chain3 = new Chain3();
 
-chain3.setProvider(new chain3.providers.HttpProvider('http://gateway.moac.io/testnet'));
+chain3.setProvider(new chain3.providers.HttpProvider('http://localhost:8545'));
 
 
 if (!chain3.isConnected()){
@@ -27,7 +26,7 @@ console.log(info);
 console.log("Check account balance\n=========================================\n");
 var coinbase = chain3.mc.accounts[0];//coinbase;
 console.log(coinbase);
-return;
+
 var balance = chain3.mc.getBalance(coinbase);
 console.log(balance.toString(10));
 console.log(chain3.fromSha(balance.toString(),'mc'), 'mc');

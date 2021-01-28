@@ -13,7 +13,7 @@ if(cmds != null && cmds.length == 3){
   var file = cmds[2];
 }else
 {
-  console.log("Input should have contract file and contract name:\neg: node deploy.js add.sol");
+  console.log("Input should have contract file and contract name:\neg: node deploy.js test.sol");
   return;
 }
   var content = fs.readFileSync(file).toString();
@@ -26,10 +26,11 @@ if(cmds != null && cmds.length == 3){
 //user should replace this account with his own add and key
 var tacct = {
   "addr": "0x7312F4B8A4457a36827f185325Fd6B66a3f8BB8B", 
-  "key": ""
+  "key": "0xc75a5f85ef779dcf95c651612efb3c3b9a6dfafb1bb5375905454d9fc8be8a6b"
 };
 
   var output = solc.compile({sources: input}, 1);
+  console.log("outputs:", output);
   console.log('contracts', Object.keys(output.contracts));
 
   var key = Object.keys(output.contracts);
@@ -85,9 +86,10 @@ function createContract(src, gasValue, inByteCode){
     console.log(rawTx);
 
 
-
     var cmd1 = chain3.signTransaction(rawTx, src["key"]);    
 
+console.log("SignedTx:", cmd1);
+return;
     chain3.mc.sendRawTransaction(cmd1, function(err, hash) {
         if (!err){
             
