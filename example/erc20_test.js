@@ -5,7 +5,7 @@
    and the contract address and abi.
 1. Connect to a local MOAC node.
 2. Load the contract address and abi.
-3. 
+3. display the token balances of the accounts.
 */
 
 // var Chain3 = require('chain3');
@@ -20,10 +20,8 @@ var tokenabi='[{"constant":false,"inputs":[{"name":"newSellPrice","type":"uint25
 //Load the contract ABI
 var tokenContract=chain3.mc.contract(JSON.parse(tokenabi));
 
-// var tokenaddress='0xf2f4eec6c2adfcf780aae828de0b25f86506ffae';
-// Devnetwork, basicToken.sol, networkid=100
-var tokenaddress='0x2e7789CEea3243B8B738D6fC40585EFC2095c93F';
-// 0xe19b0defd6cd0b2cfae2d66c474895b076b0336aff8d4367f043c978b4ead6ef
+var tokenaddress='';
+
 //Load the contract methods 
 var tcalls=tokenContract.at(tokenaddress);
 
@@ -33,10 +31,10 @@ var totalBal = 0;
 //test accounts
 //Need to add the addr and private key for your own ERC20 tokens
 var taccts = [{
-  "addr": "0x7312F4B8A4457a36827f185325Fd6B66a3f8BB8B", 
-  "key": "c75a5f85ef779dcf95c651612efb3c3b9a6dfafb1bb5375905454d9fc8be8a6b"
+  "addr": "", 
+  "key": ""
 },{
-  "addr": "0xD814F2ac2c4cA49b33066582E4e97EBae02F2aB9", 
+  "addr": "", 
   "key": ""
 }];
 
@@ -44,51 +42,37 @@ var des = taccts[1].addr;
 
 //Connect the local MOAC node through HTTP 
 chain3.setProvider(new chain3.providers.HttpProvider('http://localhost:8545'));
-// chain3.setProvider(new chain3.providers.HttpProvider('http://gateway.moac.io/testnet'));
+// chain3.setProvider(new chain3.providers.HttpProvider('http://gateway.moac.io/testnet'));//testnet connection
 
 if ( chain3.isConnected() ){
 
-  console.log("RPC connected, check token balance");
+    console.log("RPC connected, check token balance");
 
-  // console.log("code len:", chain3.mc.getCode(tokenaddress));
-  var contractCode = chain3.mc.getCode(tokenaddress);
+    // console.log("code len:", chain3.mc.getCode(tokenaddress));
+    var contractCode = chain3.mc.getCode(tokenaddress);
 
-  if (contractCode == '0x') {
-    console.log("Contract address has no data!");
-    return;
-  }
+    if (contractCode == '0x') {
+      console.log("Contract address has no data!");
+      return;
+    }
 
-  //Get token Info
-  console.log("Token Info\nfull name:", tcalls.name());
+    //Get token Info
+    console.log("Token Info\nfull name:", tcalls.name());
 
-  console.log("   symbol:", tcalls.symbol());
-  console.log("   owners:", tcalls.owner());
-
-    //Display all the token balances in the accounts
-    // for (var acctNum =0; acctNum < 3; acctNum ++){
-    //     var acct = chain3.mc.accounts[acctNum];
-
-    //     //Call the contract to check the balance of the account
-    //     var acctBal = tcalls.balanceOf(acct);
-    //     totalBal += parseFloat(acctBal);
-    //     console.log("  mc.accounts[" + acctNum + "]: \t" + acct + " \tbalance: " + acctBal);
-    // }
-    // console.log("  Total balance: " + totalBal);
+    console.log("   symbol:", tcalls.symbol());
+    console.log("   owners:", tcalls.owner());
 
     var src = taccts[0].addr;
-    // var des = "0x3f41bf4e6d18e1ee9ac13a14f8feffaa1ecebb93";
-    var des = "0x54f3FB40df3cf0d234839ae237e8C500faBd71A9";//taccts[1].addr;
-    des = "0x6Ee29762855f5cf1f6585c81FA48Fc119AF1c8D3";
+    var des = "";
+
     console.log("src bal:", src, ":",tcalls.balanceOf(src).toString(10));
     console.log("des bal:", des, ":",tcalls.balanceOf(des).toString(10));
-return;
+
     //var strData = '';
     var srcVal = tcalls.balanceOf(src);
     var desVal = tcalls.balanceOf(des);
-    // return;
-    // 1234567889999999899999999999999689869
-    // 1234567890987654321
-    var amt = 123456789987654321;//amout in erc20 token "m02"
+
+    var amt = 123456789987654321;//amout in erc20 token
 
     console.log(" Transfer from:\n", src, "\n to \n", des);
     var tcalldata = tcalls.transfer.getData(des, amt);
